@@ -9,6 +9,7 @@ void downSeek(int *, int, int, int *, int *);
 
 void fcfs(int *, int, int);
 void scan(int *, int, int, int);
+void cScan(int *, int, int, int);
 
 void main(){
     int sizeOfQueue, initialHead, sizeOfDisk;
@@ -34,6 +35,8 @@ void main(){
     sortQueue(queue, sizeOfQueue);
 
     scan(queue, sizeOfQueue, sizeOfDisk, initialHead);
+
+    cScan(queue, sizeOfQueue, sizeOfDisk, initialHead);
 }
 
 void sortQueue(int * queue, int sizeOfQueue){
@@ -101,7 +104,7 @@ void scan(int * queue, int sizeOfQueue, int sizeOfDisk, int initialHeadPos){
         printf("-");
     }
 
-    if(headerPos<queue[0]){
+    if(headerPos<=queue[0]){
         upSeek(queue, 0, sizeOfQueue, &headerPos, &totalSeekTime);
     }
     else if(headerPos>queue[sizeOfQueue-1]){
@@ -131,7 +134,7 @@ void scan(int * queue, int sizeOfQueue, int sizeOfDisk, int initialHeadPos){
                 upSeek(queue, i+1, sizeOfQueue, &headerPos, &totalSeekTime);
                 
                 if(headerPos != sizeOfDisk){
-                    diff = sizeOfDisk - queue[sizeOfQueue];
+                    diff = sizeOfDisk - queue[sizeOfQueue-1];
                     printf("\n\t%d\t\t\t%d\t\t\t%d", headerPos, sizeOfDisk, diff);
                     headerPos = sizeOfDisk;
                     totalSeekTime = totalSeekTime + diff;
@@ -144,6 +147,46 @@ void scan(int * queue, int sizeOfQueue, int sizeOfDisk, int initialHeadPos){
 
                 downSeek(queue, i-1, 0, &headerPos, &totalSeekTime);
             }
+        }
+    }
+    printf("\n\nTOTAL TIME: %d", totalSeekTime);
+    printf("\nAVERAGE SEEK TIME: %d", totalSeekTime/sizeOfQueue);
+}
+
+void cScan(int * queue, int sizeOfQueue, int sizeOfDisk, int initialHeadPos){
+    int headerPos=initialHeadPos;
+    int totalSeekTime = 0;
+    int diff, diff1, diff2;
+    printf("\n\n\nC-SCAN");
+    printf("\n======");
+    printf("\n\n\tInitial Pos\t\tFinal Pos\t\tSeek Time\n\t");
+    for(int k=0; k<lineLength; k++){
+        printf("-");
+    }
+
+    if(headerPos<=queue[0]){
+        upSeek(queue, 0, sizeOfQueue, &headerPos, &totalSeekTime);
+    }
+    else if(headerPos>=queue[sizeOfQueue-1]){
+        upSeek(queue, 0, sizeOfQueue, &headerPos, &totalSeekTime);
+    }
+    for(int i=0; i<sizeOfQueue-1; i++){
+        if(queue[i]<headerPos && queue[i+1]>headerPos){
+            upSeek(queue, i+1, sizeOfQueue, &headerPos, &totalSeekTime);
+            
+            if(headerPos != sizeOfDisk){
+                diff = sizeOfDisk - queue[sizeOfQueue-1];
+                printf("\n\t%d\t\t\t%d\t\t\t%d", headerPos, sizeOfDisk, diff);
+                headerPos = sizeOfDisk;
+                totalSeekTime = totalSeekTime + diff;
+            }
+
+            diff = sizeOfDisk - 0;
+            printf("\n\t%d\t\t\t%d\t\t\t%d", headerPos, 0, diff);
+            headerPos = 0;
+            totalSeekTime = totalSeekTime + diff;
+
+            upSeek(queue, 0, i+1, &headerPos, &totalSeekTime);
         }
     }
     printf("\n\nTOTAL TIME: %d", totalSeekTime);
