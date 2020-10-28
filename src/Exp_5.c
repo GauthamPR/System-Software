@@ -12,7 +12,7 @@ void scan(int *, int, int, int);
 void cScan(int *, int, int, int);
 
 void main(){
-    int sizeOfQueue, initialHead, sizeOfDisk;
+    int sizeOfQueue, initialHead, maxCylinder;
 
     printf("\nEnter Size of Queue: ");
     scanf("%d",&sizeOfQueue);
@@ -27,16 +27,16 @@ void main(){
     printf("\nEnter Initial head position: ");
     scanf("%d", &initialHead);
 
-    printf("\nEnter disk Size: ");
-    scanf("%d", &sizeOfDisk);
+    printf("\nEnter Max Cylinder: ");
+    scanf("%d", &maxCylinder);
 
     fcfs(queue, sizeOfQueue, initialHead);
 
     sortQueue(queue, sizeOfQueue);
 
-    scan(queue, sizeOfQueue, sizeOfDisk, initialHead);
+    scan(queue, sizeOfQueue, maxCylinder, initialHead);
 
-    cScan(queue, sizeOfQueue, sizeOfDisk, initialHead);
+    cScan(queue, sizeOfQueue, maxCylinder, initialHead);
 }
 
 void sortQueue(int * queue, int sizeOfQueue){
@@ -93,7 +93,7 @@ void fcfs(int * queue, int sizeOfQueue, int initialHeadPos){
     printf("\nAVERAGE SEEK TIME: %d", totalSeekTime/sizeOfQueue);
 }
 
-void scan(int * queue, int sizeOfQueue, int sizeOfDisk, int initialHeadPos){
+void scan(int * queue, int sizeOfQueue, int maxCylinder, int initialHeadPos){
     int headerPos=initialHeadPos;
     int totalSeekTime = 0;
     int diff, diff1, diff2;
@@ -128,10 +128,10 @@ void scan(int * queue, int sizeOfQueue, int sizeOfDisk, int initialHeadPos){
             }else{
                 upSeek(queue, i+1, sizeOfQueue, &headerPos, &totalSeekTime);
                 
-                if(headerPos != sizeOfDisk){
-                    diff = sizeOfDisk - queue[sizeOfQueue-1];
-                    printf("\n\t%d\t\t\t%d\t\t\t%d", headerPos, sizeOfDisk, diff);
-                    headerPos = sizeOfDisk;
+                if(headerPos != maxCylinder){
+                    diff = maxCylinder - queue[sizeOfQueue-1];
+                    printf("\n\t%d\t\t\t%d\t\t\t%d", headerPos, maxCylinder, diff);
+                    headerPos = maxCylinder;
                     totalSeekTime = totalSeekTime + diff;
                 }
 
@@ -143,7 +143,7 @@ void scan(int * queue, int sizeOfQueue, int sizeOfDisk, int initialHeadPos){
     printf("\nAVERAGE SEEK TIME: %d", totalSeekTime/sizeOfQueue);
 }
 
-void cScan(int * queue, int sizeOfQueue, int sizeOfDisk, int initialHeadPos){
+void cScan(int * queue, int sizeOfQueue, int maxCylinder, int initialHeadPos){
     int headerPos=initialHeadPos;
     int totalSeekTime = 0;
     int diff, diff1, diff2;
@@ -164,14 +164,14 @@ void cScan(int * queue, int sizeOfQueue, int sizeOfDisk, int initialHeadPos){
         if(queue[i]<headerPos && queue[i+1]>headerPos){
             upSeek(queue, i+1, sizeOfQueue, &headerPos, &totalSeekTime);
             
-            if(headerPos != sizeOfDisk){
-                diff = sizeOfDisk - queue[sizeOfQueue-1];
-                printf("\n\t%d\t\t\t%d\t\t\t%d", headerPos, sizeOfDisk, diff);
-                headerPos = sizeOfDisk;
+            if(headerPos != maxCylinder){
+                diff = maxCylinder - queue[sizeOfQueue-1];
+                printf("\n\t%d\t\t\t%d\t\t\t%d", headerPos, maxCylinder, diff);
+                headerPos = maxCylinder;
                 totalSeekTime = totalSeekTime + diff;
             }
 
-            diff = sizeOfDisk - 0;
+            diff = maxCylinder - 0;
             printf("\n\t%d\t\t\t%d\t\t\t%d", headerPos, 0, diff);
             headerPos = 0;
             totalSeekTime = totalSeekTime + diff;
