@@ -75,6 +75,7 @@ void downSeek(int * queue, int from, int to, int * headerPos, int *totalSeekTime
 
 void fcfs(int * queue, int sizeOfQueue, int initialHeadPos){
     int headerPos=initialHeadPos;
+    float average;
     int totalSeekTime = 0;
     int diff;
     printf("\n\n\nFCFS");
@@ -89,6 +90,7 @@ void fcfs(int * queue, int sizeOfQueue, int initialHeadPos){
         headerPos = queue[i];
         totalSeekTime = totalSeekTime + diff;
     }
+    average=totalSeekTime/sizeOfQueue;
     printf("\n\nTOTAL TIME: %d", totalSeekTime);
     printf("\nAVERAGE SEEK TIME: %f", totalSeekTime/sizeOfQueue);
 }
@@ -96,6 +98,7 @@ void fcfs(int * queue, int sizeOfQueue, int initialHeadPos){
 void scan(int * queue, int sizeOfQueue, int maxCylinder, int initialHeadPos){
     int headerPos=initialHeadPos;
     int totalSeekTime = 0;
+    float average;
     int diff, diff1, diff2;
     printf("\n\n\nSCAN");
     printf("\n====");
@@ -139,6 +142,7 @@ void scan(int * queue, int sizeOfQueue, int maxCylinder, int initialHeadPos){
             }
         }
     }
+    average = totalSeekTime/sizeOfQueue;
     printf("\n\nTOTAL TIME: %d", totalSeekTime);
     printf("\nAVERAGE SEEK TIME: %f", totalSeekTime/sizeOfQueue);
 }
@@ -146,6 +150,7 @@ void scan(int * queue, int sizeOfQueue, int maxCylinder, int initialHeadPos){
 void cScan(int * queue, int sizeOfQueue, int maxCylinder, int initialHeadPos){
     int headerPos=initialHeadPos;
     int totalSeekTime = 0;
+    float average;
     int diff, diff1, diff2;
     printf("\n\n\nC-SCAN");
     printf("\n======");
@@ -179,6 +184,7 @@ void cScan(int * queue, int sizeOfQueue, int maxCylinder, int initialHeadPos){
             upSeek(queue, 0, i+1, &headerPos, &totalSeekTime);
         }
     }
+    average = totalSeekTime/sizeOfQueue;
     printf("\n\nTOTAL TIME: %d", totalSeekTime);
     printf("\nAVERAGE SEEK TIME: %f", totalSeekTime/sizeOfQueue);
 }
