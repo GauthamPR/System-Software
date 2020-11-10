@@ -45,10 +45,9 @@ void main(){
 void producer(){
     int produced_item = rand();
 
-    printf("Produced %d", produced_item);
+    printf("\tPRODUCED %d\n", produced_item);
     wait(&empty);
     wait(&mutex);
-
     buffer[full] = produced_item;
 
     signal(&mutex);
@@ -60,14 +59,23 @@ void consumer(){
     wait(&mutex);
 
     buffer[full] = 0;
+    printf("\tCONSUMED\n");
 
     signal(&mutex);
     signal(&empty); 
 }
 
 void wait(int *s){
-    if(s<=0){
-        printf("LOOP");
+    if((*s)<=0){
+
+        if(empty == 0){
+            printf("\n\tBUFFER FULL, CONSUMING....");
+            consumer();
+        }else{
+            printf("\n\tBUFFER EMPTY, PRODUCING....");
+            producer();
+        }
+        
     }
     (*s)--;
 }
@@ -77,8 +85,9 @@ void signal(int *s){
 }
 
 void printBuffer(){
-    printf("\nBuffer:");
+    printf("Buffer:");
     for(int i=0; i<maxBuffer; i++){
         printf(" %d", buffer[i]);
     }
+    printf("\n");
 }
