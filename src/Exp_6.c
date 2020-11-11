@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-const int maxBuffer = 4;
+const int bufferSize = 4;
 int buffer[4];
 int empty = 4;
 int full = 0;
@@ -86,7 +86,7 @@ void signal(int *s){
 
 void printBuffer(){
     printf("Buffer:");
-    for(int i=0; i<maxBuffer; i++){
+    for(int i=0; i<bufferSize; i++){
         printf(" %d", buffer[i]);
     }
     printf("\n");
