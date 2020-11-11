@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include<string.h>
 
-const int maxChopstick = 5;
+const int maxChopstick = 6;
 int chopsticks[5];
 
 void eat();
@@ -36,7 +36,11 @@ int idPrompt(){
     int id;
     printf("\tEnter Philosophser Id: ");
     scanf("%d", &id);
-    return id;
+    if(id > maxChopstick|| id < 1){
+        printf("INVALID RESPONSE");
+        exit(1);
+    }
+    return (id-1);
 }
 
 void eat(int id){
