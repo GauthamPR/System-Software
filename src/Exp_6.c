@@ -7,8 +7,8 @@ int empty = 4;
 int full = 0;
 int mutex = 1;
 
-void producer();
-void consumer();
+void produce();
+void consume();
 void wait(int *);
 void signal(int *);
 void printBuffer();
@@ -20,11 +20,11 @@ void main(){
         scanf("%d", &option);
         switch (option){
             case 1:
-                producer();
+                produce();
                 break;
             
             case 2:
-                consumer();
+                consume();
                 break;
 
             case 3:
@@ -42,7 +42,7 @@ void main(){
     }
 }
 
-void producer(){
+void produce(){
     int produced_item = rand();
 
     printf("\tPRODUCED %d\n", produced_item);
@@ -54,7 +54,7 @@ void producer(){
     signal(&full);
 }
 
-void consumer(){
+void consume(){
     wait(&full);
     wait(&mutex);
 
@@ -70,10 +70,10 @@ void wait(int *s){
 
         if(empty == 0){
             printf("\n\tBUFFER FULL, CONSUMING....");
-            consumer();
+            consume();
         }else{
             printf("\n\tBUFFER EMPTY, PRODUCING....");
-            producer();
+            produce();
         }
         
     }
