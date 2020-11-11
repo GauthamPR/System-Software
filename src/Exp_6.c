@@ -16,7 +16,7 @@ void printBuffer();
 void main(){
     int option;
     while(1){
-        printf("\nEnter Choice:     1.Producer     2.Consumer      3.Print Buffer       4.Exit :  ");
+        printf("\nEnter Choice:     1.Produce     2.Consume      3.Print Buffer       4.Exit :  ");
         scanf("%d", &option);
         switch (option){
             case 1:
