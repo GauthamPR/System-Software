@@ -8,35 +8,37 @@ int chopsticks[10];
 int wait(int *);
 void signal(int *);
 void initChopsticks();
-int startEat(int);
+int tryEat(int);
 void stopEat(int);
 void printChops();
 
 void main(){
-    int finishedEating[10];
-    memset(finishedEating, 0, 10*sizeof(int));
-    int count = 0;
-    printf("%d", finishedEating[4]);
-    printf("\n\nEnter Number Of Philosophers: ");
+    int philosopherStatus[10];  //0-hungry  1-eating    2-finished
+    memset(philosopherStatus, 0, 10*sizeof(int));
+
+    int finishedEating = 0;
+
+    printf("\n\nEnter Number Of Philosophers: ");   //less than 10
     scanf("%d", &numberOfPhilosophers);
     numberOfChopsticks = numberOfPhilosophers;
     initChopsticks();
-    while(count < numberOfPhilosophers){
+    printChops();
+    while(finishedEating < numberOfPhilosophers){
         for(int i=0; i<numberOfPhilosophers; i++){
-            printChops();
-            if(finishedEating[i] < 2){
-                if(startEat(i) == 1){
-                    printf("\nPhilosopher %d is eating", i+1);
-                    finishedEating[i] = 1;
+            if(philosopherStatus[i] == 0){
+                if(tryEat(i) == 1){
+                    printf("\n\tPhilosopher %d is Eating", i+1);
+                    philosopherStatus[i] = 1;
                 }else{
-                    printf("\nPhilosopher %d is thinking", i+1);
-                    if(finishedEating[i]==1){
-                        count++;
-                        finishedEating[i]=2;
-                    }
+                    printf("\n\tPhilosopher %d is Hungry", i+1);
                 }
-            }else{
-                printf("\nPhilosopher %d is thinking2", i+1);
+            }else if(philosopherStatus[i]==1){
+                printf("\n\tPhilosopher %d has finished Eating", i+1);
+                finishedEating++;
+                stopEat(i);
+                philosopherStatus[i]=2;
+            }else if(philosopherStatus[i]==2){
+                printf("\n\tPhilosopher %d has finished Eating", i+1);
             }
             printChops();
             printf("\n");
@@ -45,7 +47,7 @@ void main(){
     }
 }
 
-int startEat(int i){
+int tryEat(int i){
     int blocked = 0;
     if(wait(&chopsticks[i]) == 0){
         blocked++;
@@ -54,25 +56,20 @@ int startEat(int i){
         blocked += 2;
     }
 
-    if(blocked == 0){
-        return 1;
-    }
     if(blocked == 1){
         signal(&chopsticks[(i+1)%numberOfChopsticks]);
+        return 0;
     }
     if(blocked == 2){
         signal(&chopsticks[i]);
         return 0;
     }
     if(blocked == 3){
-        printf("\t\t\t\t\tHEHE");
-        signal(&chopsticks[i]);
-        signal(&chopsticks[(i+1)%numberOfChopsticks]);
         return 0;
     }
+    return 1;
 }
 void stopEat(int i){
-    printf("\n\tPhilosopher %d has stopped Eating", i+1);
     signal(&chopsticks[i]);
     signal(&chopsticks[(i+1)%numberOfChopsticks]);
 }
@@ -93,8 +90,8 @@ void initChopsticks(){
     for(int i=0; i<numberOfChopsticks; i++){
         chopsticks[i] = 1;
     }
-    printChops();
 }
+
 void printChops(){
     printf("\nChopStick: ");
     for(int i=0; i<numberOfChopsticks; i++){
