@@ -18,7 +18,7 @@ void main(){
 
     int finishedEating = 0;
 
-    printf("\n\nEnter Number Of Philosophers: ");   //less than 10
+    printf("\nEnter Number Of Philosophers: ");   //less than 10
     scanf("%d", &numberOfPhilosophers);
     numberOfChopsticks = numberOfPhilosophers;
     initChopsticks();
