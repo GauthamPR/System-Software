@@ -22,8 +22,9 @@ void main(){
     scanf("%d", &numberOfPhilosophers);
     numberOfChopsticks = numberOfPhilosophers;
     initChopsticks();
-    printf("Initial ");
+    printf("\t\t\t\t\t\tInitial ");
     printChops();
+    printf("\n");
     while(finishedEating < numberOfPhilosophers){
         for(int i=0; i<numberOfPhilosophers; i++){
             if(philosopherStatus[i] == 0){
@@ -34,16 +35,20 @@ void main(){
                     printf("\n\tPhilosopher %d is Hungry\t\t\t", i+1);
                 }
             }else if(philosopherStatus[i]==1){
-                printf("\n\tPhilosopher %d has finished Eating\t", i+1);
+                printf("\n\tPhilosopher %d has Finished Eating\t", i+1);
                 finishedEating++;
                 stopEat(i);
                 philosopherStatus[i]=2;
             }else if(philosopherStatus[i]==2){
-                printf("\n\tPhilosopher %d has finished Eating\t", i+1);
+                printf("\n\tPhilosopher %d has Finished Eating\t", i+1);
             }
             printChops();
         }
-        printf("\n\n=============================================================\n");
+        printf("\n\n\t====================================================");
+        for(int k=0; k<numberOfPhilosophers; k++){
+            printf("=");
+        }
+        printf("\n");
     }
 }
 
@@ -93,7 +98,7 @@ void initChopsticks(){
 }
 
 void printChops(){
-    printf("\t\t        ChopStick: ");
+    printf("ChopSticks: ");
     for(int i=0; i<numberOfChopsticks; i++){
         printf("%d",chopsticks[i]);
     }
