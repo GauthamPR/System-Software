@@ -22,28 +22,28 @@ void main(){
     scanf("%d", &numberOfPhilosophers);
     numberOfChopsticks = numberOfPhilosophers;
     initChopsticks();
+    printf("Initial ");
     printChops();
     while(finishedEating < numberOfPhilosophers){
         for(int i=0; i<numberOfPhilosophers; i++){
             if(philosopherStatus[i] == 0){
                 if(tryEat(i) == 1){
-                    printf("\n\tPhilosopher %d is Eating", i+1);
+                    printf("\n\tPhilosopher %d is Eating\t\t\t", i+1);
                     philosopherStatus[i] = 1;
                 }else{
-                    printf("\n\tPhilosopher %d is Hungry", i+1);
+                    printf("\n\tPhilosopher %d is Hungry\t\t\t", i+1);
                 }
             }else if(philosopherStatus[i]==1){
-                printf("\n\tPhilosopher %d has finished Eating", i+1);
+                printf("\n\tPhilosopher %d has finished Eating\t", i+1);
                 finishedEating++;
                 stopEat(i);
                 philosopherStatus[i]=2;
             }else if(philosopherStatus[i]==2){
-                printf("\n\tPhilosopher %d has finished Eating", i+1);
+                printf("\n\tPhilosopher %d has finished Eating\t", i+1);
             }
             printChops();
-            printf("\n");
         }
-        printf("\n");
+        printf("\n\n=============================================================\n");
     }
 }
 
@@ -75,7 +75,7 @@ void stopEat(int i){
 }
 int wait(int *s){
     if((*s)<=0){
-        printf("BLOCKED");
+        //printf("BLOCKED");
         return 0;
     }
     (*s)--;
@@ -93,7 +93,7 @@ void initChopsticks(){
 }
 
 void printChops(){
-    printf("\nChopStick: ");
+    printf("\t\t        ChopStick: ");
     for(int i=0; i<numberOfChopsticks; i++){
         printf("%d",chopsticks[i]);
     }
