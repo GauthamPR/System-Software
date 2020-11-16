@@ -20,30 +20,32 @@ int hash(char *);
 
 void main(){
     int option;
-    printf("\nEnter Option:\t1.Enter Values\t2.Search Values\t3.Exit:\t");
-    scanf("%d", &option);
+    initTables();
 
-    switch (option)
-    {
-    case 1:
-        enterValues();
-        break;
-    case 2:
-        searchValues();
-        break;
-    case 3:
-        exit(1);
-        break;
-    default:
-        break;
+    while(1){
+        printf("\nEnter Option:\t1.Enter Values\t2.Search Values\t3.Exit:\t");
+        scanf("%d", &option);
+
+        switch (option)
+        {
+        case 1:
+            enterValues();
+            break;
+        case 2:
+            searchValues();
+            break;
+        case 3:
+            exit(1);
+            break;
+        default:
+            break;
+        }
     }
 }
 
 void enterValues(){
     char label[labelSize];
     int address, key;
-    initTables();
-    while(1){
     printf("\n\tEnter Label Name:\t");
     scanf("%s", label);
     printf("\tEnter Address:\t");
@@ -70,29 +72,35 @@ void searchValues(){
     return;
 }
 void insertIntoTable(int key, char * label, int address){
-    if(table[key].label == initialTableValue){
+    if(strcmp(table[key].label, initialTableValue) == 0){
         strcpy(table[key].label, label);
         table[key].address = address;
+        table[key].next = NULL;
         printf("\nValues inserted directly");
     }else{
         struct elem* traverse = table->next;
+        if(strcmp(label, table[key].label)==0){
+            printf("\nLABEL ALREADY EXISTS");
+            return;
+        }
         while(traverse!=NULL){
             if(strcmp(label, table[key].label)==0){
                 printf("\nLABEL ALREADY EXISTS");
-                break;
-            }else{
-                struct elem * newElem = (struct elem *)malloc(sizeof(struct elem));
-                strcpy(newElem->label, label);
-                newElem->address = address;
-                newElem->next = NULL;
-                table[key].next = newElem;
+                return;
             }
             traverse = traverse->next;
         }
+        struct elem * newElem = (struct elem *)malloc(sizeof(struct elem));
+        strcpy(newElem->label, label);
+        newElem->address = address;
+        newElem->next = NULL;
+        table[key].next = newElem;
+        printf("\nValues entered as linked list");
     }
 }
 void initTables(){
     for(int i=0; i<maxRows; i++){
         strcpy(table[i].label, initialTableValue);
+        table[i].next = NULL;
     }
 }
