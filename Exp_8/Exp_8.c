@@ -76,18 +76,18 @@ void searchValues(){
     return;
 }
 void insertIntoTable(int key, char * label, int address){
-    struct elem* traverse = table->next;
     if(strcmp(table[key].label, initialTableValue) == 0){
         strcpy(table[key].label, label);
         table[key].address = address;
         table[key].next = NULL;
         printf("\nValues inserted directly");
     }else{
+        struct elem* traverse = table;
         if(strcmp(label, table[key].label)==0){
             printf("\nLABEL ALREADY EXISTS");
             return;
         }
-        while(traverse!=NULL){
+        while(traverse->next!=NULL){
             if(strcmp(label, table[key].label)==0){
                 printf("\nLABEL ALREADY EXISTS");
                 return;
@@ -98,7 +98,7 @@ void insertIntoTable(int key, char * label, int address){
         strcpy(newElem->label, label);
         newElem->address = address;
         newElem->next = NULL;
-        traverse = newElem;
+        traverse->next = newElem;
         printf("\nValues entered as linked list");
     }
 }
@@ -118,9 +118,9 @@ void readFromFile(){
     }
     for(int i=0; i<maxRows; i++){
         fread(&table[i], sizeof(struct elem), 1, fptr);
-        struct elem * traverse = table[i].next;
+        struct elem * traverse = &table[i];
         struct elem * prev = &table[i];
-        while(traverse != NULL){
+        while(traverse->next != NULL){
             traverse = (struct traverse *) malloc(sizeof(struct elem));
             fread(traverse, sizeof(struct elem), 1, fptr);
             prev->next = traverse;
