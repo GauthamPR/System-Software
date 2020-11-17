@@ -66,7 +66,7 @@ void insertIntoTable(int key, char * label, int address){
         table[key].next = NULL;
         printf("\tVALUES INSERTED\n");
     }else{
-        struct elem* traverse = table;
+        struct elem* traverse = &table[key];
         if(strcmp(label, table[key].label)==0){
             printf("\tLABEL ALREADY EXISTS\n");
             return;
