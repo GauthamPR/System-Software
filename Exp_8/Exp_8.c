@@ -67,10 +67,6 @@ void insertIntoTable(int key, char * label, int address){
         printf("\tVALUES INSERTED\n");
     }else{
         struct elem* traverse = &table[key];
-        if(strcmp(label, table[key].label)==0){
-            printf("\tLABEL ALREADY EXISTS\n");
-            return;
-        }
         while(traverse->next!=NULL){
             if(strcmp(label, table[key].label)==0){
                 printf("\tLABEL ALREADY EXISTS\n");
@@ -91,7 +87,7 @@ int hash(char * label){
     int sumOfChars = 0;
     int i = 0;
     while(traverse!='\0'){
-        sumOfChars += traverse;
+        sumOfChars += (traverse * i);
         traverse = label[++i];
     }
     int key = (sumOfChars*i) % maxRows;
