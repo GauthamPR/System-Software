@@ -93,10 +93,10 @@ int hash(char * label){
     int sumOfChars = 0;
     int i = 0;
     while(traverse!='\0'){
-        sumOfChars += traverse;
+        sumOfChars += (traverse * i);
         traverse = label[++i];
     }
-    int key = (sumOfChars*i) % maxRows;
+    int key = (sumOfChars) % maxRows;
     return key;
 }
 void display(){
