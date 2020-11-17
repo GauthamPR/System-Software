@@ -90,7 +90,7 @@ int hash(char * label){
         sumOfChars += (traverse * i);
         traverse = label[++i];
     }
-    int key = (sumOfChars*i) % maxRows;
+    int key = sumOfChars % maxRows;
     return key;
 }
 void display(){
