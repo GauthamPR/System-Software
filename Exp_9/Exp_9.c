@@ -17,9 +17,9 @@ void main(){
     int startingAddress, locCtr, length, pgmLength;
     FILE *source, *intermediate, *symTab, *opTab;
 
-    source = fopen("source.txt", "r");
+    source = fopen("./src/source2.txt", "r");
     symTab = fopen("symTab.txt", "w+");
-    opTab = fopen("opTab.txt", "r");
+    opTab = fopen("./bin/opTab.txt", "r");
     intermediate = fopen("intermediate.txt", "w");
 
     if(source == NULL){
@@ -70,6 +70,7 @@ void main(){
     fclose(symTab);
     fclose(opTab);
     fclose(intermediate);
+    printf("\nPASS 1 SUCCESSFUL");
     return ;
 }
 
