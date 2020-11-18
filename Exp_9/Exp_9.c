@@ -36,6 +36,7 @@ void main(){
         locCtr = 0;
     }
     while(strcmp(lineBuffer.opcode, "END")!=0){
+        writeTo(locCtr, intermediate);
         if(strcmp(lineBuffer.label, "**")!=0){
             if(search(lineBuffer.label, symTab)){
                 printf("\nLABEL ALREADY EXISTS: %s", lineBuffer.label);
@@ -45,11 +46,11 @@ void main(){
         }
         if(strcmp(lineBuffer.opcode, "WORD")==0){
             locCtr += 3;
-        }else if(strcmp(lineBuffer.operand, "RESW")==0){
+        }else if(strcmp(lineBuffer.opcode, "RESW")==0){
             locCtr += (3 * lineBuffer.operand[0]);
-        }else if(strcmp(lineBuffer.operand, "RESB")==0){
+        }else if(strcmp(lineBuffer.opcode, "RESB")==0){
             locCtr += lineBuffer.operand[0];
-        }else if(strcmp(lineBuffer.operand, "BYTE")==0){
+        }else if(strcmp(lineBuffer.opcode, "BYTE")==0){
             length = strlen(lineBuffer.operand) - 3;
             locCtr += length;
         }else{
@@ -59,7 +60,6 @@ void main(){
                 printf("\nINVALID OPERATION CODE: %s", lineBuffer.opcode);
             }
         }
-        writeTo(locCtr, intermediate);
         readFrom(source);
     }
     
@@ -81,14 +81,14 @@ void writeTo(int locCtr, FILE * fout){
     fprintf(fout, "%d %s %s %s\n", locCtr, lineBuffer.label, lineBuffer.opcode, lineBuffer.operand);
 }
 void insertInto(FILE * file, char * label, int locCtr){
+    fseek(file, 0, SEEK_END);
     fprintf(file, "%s %d\n", label, locCtr);
 }
 int search(char * key, FILE * file){
     char fileKey[10];
-    int fileAddress, ableToRead = 1;
+    int fileKeyValue;
     rewind(file);
-    while(ableToRead==1){
-        ableToRead = fscanf(file, "%s %d", fileKey, &fileAddress);
+    while(fscanf(file, "%s %d", fileKey, &fileKeyValue)!=-1){
         if(strcmp(fileKey, key)==0){
             return 1;
         }
