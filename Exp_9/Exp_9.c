@@ -47,9 +47,9 @@ void main(){
         if(strcmp(lineBuffer.opcode, "WORD")==0){
             locCtr += 3;
         }else if(strcmp(lineBuffer.opcode, "RESW")==0){
-            locCtr += (3 * lineBuffer.operand[0]);
+            locCtr += (3 * atoi(lineBuffer.operand));
         }else if(strcmp(lineBuffer.opcode, "RESB")==0){
-            locCtr += lineBuffer.operand[0];
+            locCtr += atoi(lineBuffer.operand);
         }else if(strcmp(lineBuffer.opcode, "BYTE")==0){
             length = strlen(lineBuffer.operand) - 3;
             locCtr += length;
