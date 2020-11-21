@@ -17,7 +17,6 @@ void main(){
     int startingAddress, locCtr, length, pgmLength;
     FILE *source, *intermediate, *symTab, *opTab;
 
-    source = fopen("../bin/src/source.txt", "r");
     symTab = fopen("../bin/symTab.txt", "w+");
     opTab = fopen("../bin/opTab.txt", "r");
     intermediate = fopen("../bin/intermediate.txt", "w");
