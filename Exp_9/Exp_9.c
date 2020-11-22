@@ -15,11 +15,12 @@ int search(char * key, FILE *);
 
 void main(){
     int startingAddress, locCtr, length, pgmLength;
-    FILE *source, *intermediate, *symTab, *opTab;
+    FILE *source, *intermediate, *symTab, *opTab, *variables;
 
-    source = fopen("../bin/src/source.txt", "r");
+    variables = fopen("../bin/var.txt", "w");
+    source = fopen("../bin/src/source2.txt", "r");
     symTab = fopen("../bin/symTab.txt", "w+");
-    opTab = fopen("../bin/opTab.txt", "r");
+    opTab = fopen("../bin/src/opTab.txt", "r");
     intermediate = fopen("../bin/intermediate.txt", "w");
 
     if(source == NULL){
@@ -28,7 +29,7 @@ void main(){
     }
     readFrom(source);
     if(strcmp(lineBuffer.opcode, "START")==0){
-        startingAddress = atoi(lineBuffer.operand);
+        startingAddress = (int)strtol(lineBuffer.operand, NULL, 16);
         locCtr = startingAddress;
         writeTo(locCtr, intermediate);
         readFrom(source);
@@ -58,6 +59,7 @@ void main(){
                 locCtr += 3;
             }else{
                 printf("\nINVALID OPERATION CODE: %s", lineBuffer.opcode);
+                exit(1);
             }
         }
         readFrom(source);
@@ -65,7 +67,9 @@ void main(){
     
     writeTo(0, intermediate);
     pgmLength = locCtr-startingAddress;
+    fprintf(variables, "ProgramLength %d", pgmLength);
 
+    fclose(variables);
     fclose(source);
     fclose(symTab);
     fclose(opTab);
@@ -79,11 +83,11 @@ void readFrom(FILE * fin){
 }
 
 void writeTo(int locCtr, FILE * fout){
-    fprintf(fout, "%d %s %s %s\n", locCtr, lineBuffer.label, lineBuffer.opcode, lineBuffer.operand);
+    fprintf(fout, "%4X %s %s %s\n", locCtr, lineBuffer.label, lineBuffer.opcode, lineBuffer.operand);
 }
 void insertInto(FILE * file, char * label, int locCtr){
     fseek(file, 0, SEEK_END);
-    fprintf(file, "%s %d\n", label, locCtr);
+    fprintf(file, "%s %4X\n", label, locCtr);
 }
 int search(char * key, FILE * file){
     char fileKey[10];

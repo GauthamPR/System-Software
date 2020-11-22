@@ -3,96 +3,102 @@
 #include<string.h>
 
 struct line{
+    int address;
     char label[10];
     char opcode[10];
     char operand[10];
 }lineBuffer;
 
+struct outLine{
+    int startingAddress;
+    int length;
+    int opcode[10];
+}textRecord;
+
 void readFrom(FILE *);
-void writeTo(int, FILE *);
-void insertInto(FILE *, char *, int);
+void writeTo(FILE *);
 int search(char * key, FILE *);
+void initializeTextRecord(int);
 
 void main(){
     char programName[8];
+    char temp[10];
+    int outLineCounter=0;
 
     int startingAddress, locCtr, length, pgmLength;
-    FILE *output, *intermediate, *symTab, *opTab;
+    FILE *output, *intermediate, *symTab, *opTab, *variables;
 
-    symTab = fopen("../bin/symTab.txt", "w+");
+    symTab = fopen("../bin/symTab.txt", "r");
     opTab = fopen("../bin/opTab.txt", "r");
-    intermediate = fopen("../bin/intermediate.txt", "w");
+    intermediate = fopen("../bin/intermediate.txt", "r");
     output = fopen("../bin/output.txt", "w");
-
+    variables = fopen("../bin/var.txt", "r");
     if(output == NULL){
         printf("\nERROR OPENING FILE");
         exit(1);
     }
+
     readFrom(intermediate);
     if(strcmp(lineBuffer.opcode, "START")==0){
         strcpy(programName, lineBuffer.label);    
-        startingAddress = lineBuffer.operand;
+        startingAddress = (int)strtol(lineBuffer.operand, NULL, 16);
+        fscanf(variables, "%s %d", temp, &pgmLength);
         readFrom(intermediate);
     }
-    fprintf(output, "H%s%s\n", programName, startingAddress);
+    fprintf(output, "H%6s%6X%6X\n", programName, startingAddress, pgmLength);
+    initializeTextRecord(startingAddress);
     while(strcmp(lineBuffer.opcode, "END")!=0){
-        writeTo(locCtr, intermediate);
-        if(strcmp(lineBuffer.label, "**")!=0){
-            if(search(lineBuffer.label, symTab)){
-                printf("\nLABEL ALREADY EXISTS: %s", lineBuffer.label);
-            }else{
-                insertInto(symTab, lineBuffer.label, locCtr);
+        if(search(lineBuffer.opcode, opTab)!=-1){
+            if(lineBuffer.operand != NULL){
+                textRecord.opcode[outLineCounter] = search(lineBuffer.operand, symTab);
+                if(textRecord.opcode[outLineCounter]==-1){
+                    printf("\nSYMBOL NOT FOUND");
+                    exit(1);
+                }
             }
+        }else if(lineBuffer.opcode == "BYTE" || lineBuffer.opcode == "WORD"){
+            //CONVERT
         }
-        if(strcmp(lineBuffer.opcode, "WORD")==0){
-            locCtr += 3;
-        }else if(strcmp(lineBuffer.opcode, "RESW")==0){
-            locCtr += (3 * atoi(lineBuffer.operand));
-        }else if(strcmp(lineBuffer.opcode, "RESB")==0){
-            locCtr += atoi(lineBuffer.operand);
-        }else if(strcmp(lineBuffer.opcode, "BYTE")==0){
-            length = strlen(lineBuffer.operand) - 3;
-            locCtr += length;
-        }else{
-            if(search(lineBuffer.opcode, opTab)==1){
-                locCtr += 3;
-            }else{
-                printf("\nINVALID OPERATION CODE: %s", lineBuffer.opcode);
-            }
+        outLineCounter++;
+        textRecord.length = outLineCounter*24;
+        if(outLineCounter>9){
+            writeTo(output);
         }
-        readFrom(source);
     }
-    
-    writeTo(0, intermediate);
-    pgmLength = locCtr-startingAddress;
 
-    fclose(source);
+    fclose(variables);
+    fclose(output);
     fclose(symTab);
     fclose(opTab);
     fclose(intermediate);
-    printf("\nPASS 1 SUCCESSFUL");
+    printf("\nPASS 2 SUCCESSFUL");
     return ;
 }
 
+void initializeTextRecord(int address){
+    textRecord.startingAddress = address;
+    textRecord.length = 0;
+    memset(textRecord.opcode, -1, 10*sizeof(int));
+}
 void readFrom(FILE * fin){
-    fscanf(fin, "%s %s %s", lineBuffer.label, lineBuffer.opcode, lineBuffer.operand);
+    fscanf(fin, "%X %s %s %s", lineBuffer.address,lineBuffer.label, lineBuffer.opcode, lineBuffer.operand);
 }
 
-void writeTo(int locCtr, FILE * fout){
-    fprintf(fout, "%d %s %s %s\n", locCtr, lineBuffer.label, lineBuffer.opcode, lineBuffer.operand);
-}
-void insertInto(FILE * file, char * label, int locCtr){
-    fseek(file, 0, SEEK_END);
-    fprintf(file, "%s %d\n", label, locCtr);
+void writeTo(FILE * fout){
+    fprintf(fout, "T%6X %2X", textRecord.startingAddress, textRecord.length);
+    for(int i=0;textRecord.opcode[i]!=0 && i<11;i++){
+        fprintf(fout, "%6X",  textRecord.opcode[i]);
+    }
+    fprintf(fout, "\n");
 }
 int search(char * key, FILE * file){
     char fileKey[10];
     int fileKeyValue;
     rewind(file);
-    while(fscanf(file, "%s %d", fileKey, &fileKeyValue)!=-1){
+    while(fscanf(file, "%s %X", fileKey, &fileKeyValue)!=-1){
         if(strcmp(fileKey, key)==0){
-            return 1;
+            return fileKeyValue;
         }
     }
-    return 0;
+    return -1;
 }
