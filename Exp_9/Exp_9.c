@@ -83,7 +83,7 @@ void main(){
 }
 
 void readFrom(FILE * fin){
-    fscanf(fin, "%s %s %s", lineBuffer.label, lineBuffer.opcode, lineBuffer.operand);
+    fscanf(fin, "%s %s %s ", lineBuffer.label, lineBuffer.opcode, lineBuffer.operand);
 }
 
 void writeTo(int locCtr, FILE * fout){
