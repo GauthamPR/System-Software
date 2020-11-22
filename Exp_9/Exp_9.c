@@ -18,7 +18,7 @@ void main(){
     FILE *source, *intermediate, *symTab, *opTab, *variables;
 
     variables = fopen("../bin/var.txt", "w");
-    source = fopen("../bin/src/source2.txt", "r");
+    source = fopen("../bin/src/source3.txt", "r");
     symTab = fopen("../bin/symTab.txt", "w+");
     opTab = fopen("../bin/src/opTab.txt", "r");
     intermediate = fopen("../bin/intermediate.txt", "w");
@@ -52,14 +52,18 @@ void main(){
         }else if(strcmp(lineBuffer.opcode, "RESB")==0){
             locCtr += atoi(lineBuffer.operand);
         }else if(strcmp(lineBuffer.opcode, "BYTE")==0){
-            length = strlen(lineBuffer.operand) - 3;
+            if(lineBuffer.operand[0]=='C'){
+                length = strlen(lineBuffer.operand) - 3;
+            }else if(lineBuffer.operand[0]=='X'){
+                length = strlen(lineBuffer.operand) - 3;
+                length = (length/2) + (length%2);
+            }
             locCtr += length;
         }else{
             if(search(lineBuffer.opcode, opTab)==1){
                 locCtr += 3;
             }else{
                 printf("\nINVALID OPERATION CODE: %s", lineBuffer.opcode);
-                exit(1);
             }
         }
         readFrom(source);

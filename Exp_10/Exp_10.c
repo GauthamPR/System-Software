@@ -48,14 +48,13 @@ void main(){
         fscanf(variables, "%s %d", temp, &pgmLength);
         readFrom(intermediate);
     }
-    fprintf(output, "H%-6s%006X%6X\n", programName, startingAddress, pgmLength);
+    fprintf(output, "H%-6s%0000006X%0000006X\n", programName, startingAddress, pgmLength);
     initializeTextRecord(startingAddress);
     while(strcmp(lineBuffer.opcode, "END")!=0){
-        textRecord.length = (outLineCounter+1)*24;
         found = search(lineBuffer.opcode, opTab);
         if(found!=-1){
             textRecord.opcode[outLineCounter] = found;
-            if(lineBuffer.operand != NULL){
+            if(strcmp(lineBuffer.operand, "**")!=0){
                 found = search(lineBuffer.operand, symTab);
                 if(textRecord.opcode[outLineCounter]==-1){
                     printf("\nSYMBOL NOT FOUND");
@@ -64,8 +63,11 @@ void main(){
                 else{
                     textRecord.operandAdd[outLineCounter] = found;
                 }
+            }else{
+                textRecord.operandAdd[outLineCounter] = 0;
             }
-        }else if(lineBuffer.opcode == "BYTE"){
+        }else if(strcmp(lineBuffer.opcode, "BYTE")==0){
+            textRecord.opcode[outLineCounter] = -2;
             if(lineBuffer.operand[0]=='C'){
                 textRecord.operandAdd[outLineCounter] = calculateHexValue();
             }else if(lineBuffer.operand[0]=='X'){
@@ -75,18 +77,22 @@ void main(){
                 }
                 textRecord.operandAdd[outLineCounter] = (int)strtol(tempStr, NULL, 15);
             }
-        }else if(lineBuffer.opcode == "WORD"){
+        }else if(strcmp(lineBuffer.opcode, "WORD")==0){
+            textRecord.opcode[outLineCounter] = -2;
             textRecord.operandAdd[outLineCounter] = (int)strtol(lineBuffer.operand, NULL, 15);
         }
         outLineCounter++;
+        textRecord.length = (outLineCounter)*24;
         if(outLineCounter>9){
             writeTo(output);
+            initializeTextRecord(textRecord.operandAdd[outLineCounter]);
             outLineCounter = 0;
         }
         readFrom(intermediate);
     }
     if(outLineCounter < 10){
         writeTo(output);
+        initializeTextRecord(textRecord.operandAdd[outLineCounter]);
         outLineCounter = 0;
     }
 
@@ -109,9 +115,13 @@ void readFrom(FILE * fin){
 }
 
 void writeTo(FILE * fout){
-    fprintf(fout, "T%6X%2X", textRecord.startingAddress, textRecord.length);
-    for(int i=0;textRecord.opcode[i]!=-1 && i<11;i++){
-        fprintf(fout, "%2X%4X", textRecord.opcode[i], textRecord.operandAdd[i]);
+    fprintf(fout, "T%0000006X%002X", textRecord.startingAddress, textRecord.length);
+    for(int i=0;textRecord.opcode[i]!=-1 && i<10;i++){
+        if(textRecord.opcode[i] == -2){
+            fprintf(fout, " %00006X", textRecord.operandAdd[i]);
+        }else{
+            fprintf(fout, " %002X%00004X", textRecord.opcode[i], textRecord.operandAdd[i]);
+        }
     }
     fprintf(fout, "\n");
 }
