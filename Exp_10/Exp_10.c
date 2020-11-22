@@ -14,26 +14,27 @@ void insertInto(FILE *, char *, int);
 int search(char * key, FILE *);
 
 void main(){
+    char programName[8];
+
     int startingAddress, locCtr, length, pgmLength;
-    FILE *source, *intermediate, *symTab, *opTab;
+    FILE *output, *intermediate, *symTab, *opTab;
 
     symTab = fopen("../bin/symTab.txt", "w+");
     opTab = fopen("../bin/opTab.txt", "r");
     intermediate = fopen("../bin/intermediate.txt", "w");
+    output = fopen("../bin/output.txt", "w");
 
-    if(source == NULL){
+    if(output == NULL){
         printf("\nERROR OPENING FILE");
         exit(1);
     }
-    readFrom(source);
+    readFrom(intermediate);
     if(strcmp(lineBuffer.opcode, "START")==0){
-        startingAddress = atoi(lineBuffer.operand);
-        locCtr = startingAddress;
-        writeTo(locCtr, intermediate);
-        readFrom(source);
-    }else{
-        locCtr = 0;
+        strcpy(programName, lineBuffer.label);    
+        startingAddress = lineBuffer.operand;
+        readFrom(intermediate);
     }
+    fprintf(output, "H%s%s\n", programName, startingAddress);
     while(strcmp(lineBuffer.opcode, "END")!=0){
         writeTo(locCtr, intermediate);
         if(strcmp(lineBuffer.label, "**")!=0){
