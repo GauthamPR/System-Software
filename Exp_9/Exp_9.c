@@ -15,11 +15,12 @@ int search(char * key, FILE *);
 
 void main(){
     int startingAddress, locCtr, length, pgmLength;
-    FILE *source, *intermediate, *symTab, *opTab;
+    FILE *source, *intermediate, *symTab, *opTab, *variables;
 
-    source = fopen("../bin/src/source.txt", "r");
+    variables = fopen("../bin/var.txt", "w");
+    source = fopen("../bin/src/source3.txt", "r");
     symTab = fopen("../bin/symTab.txt", "w+");
-    opTab = fopen("../bin/opTab.txt", "r");
+    opTab = fopen("../bin/src/opTab.txt", "r");
     intermediate = fopen("../bin/intermediate.txt", "w");
 
     if(source == NULL){
@@ -28,7 +29,7 @@ void main(){
     }
     readFrom(source);
     if(strcmp(lineBuffer.opcode, "START")==0){
-        startingAddress = atoi(lineBuffer.operand);
+        startingAddress = (int)strtol(lineBuffer.operand, NULL, 16);
         locCtr = startingAddress;
         writeTo(locCtr, intermediate);
         readFrom(source);
@@ -51,7 +52,12 @@ void main(){
         }else if(strcmp(lineBuffer.opcode, "RESB")==0){
             locCtr += atoi(lineBuffer.operand);
         }else if(strcmp(lineBuffer.opcode, "BYTE")==0){
-            length = strlen(lineBuffer.operand) - 3;
+            if(lineBuffer.operand[0]=='C'){
+                length = strlen(lineBuffer.operand) - 3;
+            }else if(lineBuffer.operand[0]=='X'){
+                length = strlen(lineBuffer.operand) - 3;
+                length = (length/2) + (length%2);
+            }
             locCtr += length;
         }else{
             if(search(lineBuffer.opcode, opTab)==1){
@@ -65,7 +71,9 @@ void main(){
     
     writeTo(0, intermediate);
     pgmLength = locCtr-startingAddress;
+    fprintf(variables, "ProgramLength %d", pgmLength);
 
+    fclose(variables);
     fclose(source);
     fclose(symTab);
     fclose(opTab);
@@ -75,15 +83,15 @@ void main(){
 }
 
 void readFrom(FILE * fin){
-    fscanf(fin, "%s %s %s", lineBuffer.label, lineBuffer.opcode, lineBuffer.operand);
+    fscanf(fin, "%s %s %s ", lineBuffer.label, lineBuffer.opcode, lineBuffer.operand);
 }
 
 void writeTo(int locCtr, FILE * fout){
-    fprintf(fout, "%d %s %s %s\n", locCtr, lineBuffer.label, lineBuffer.opcode, lineBuffer.operand);
+    fprintf(fout, "%4X %s %s %s\n", locCtr, lineBuffer.label, lineBuffer.opcode, lineBuffer.operand);
 }
 void insertInto(FILE * file, char * label, int locCtr){
     fseek(file, 0, SEEK_END);
-    fprintf(file, "%s %d\n", label, locCtr);
+    fprintf(file, "%s %4X\n", label, locCtr);
 }
 int search(char * key, FILE * file){
     char fileKey[10];
