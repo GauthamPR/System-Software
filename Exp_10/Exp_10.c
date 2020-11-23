@@ -64,7 +64,7 @@ void main(){
             if(strcmp(lineBuffer.operand, "**")!=0){
                 found = search(lineBuffer.operand, symTab);
                 if(found==-1){
-                    printf("\nSYMBOL NOT FOUND");
+                    printf("\n%s SYMBOL NOT FOUND", lineBuffer.operand);
                     exit(1);
                 }
                 else{
@@ -171,6 +171,7 @@ int calculateHexValue(){
     int val ;
     fscanf(fptr, "%X", &val);
     fclose(fptr);
+    remove("text.txt");
     return val;
 }
 int calculateIntValue(){
@@ -186,5 +187,6 @@ int calculateIntValue(){
     int val ;
     fscanf(fptr, "%X", &val);
     fclose(fptr);
+    remove("text.txt");
     return val;
 }
