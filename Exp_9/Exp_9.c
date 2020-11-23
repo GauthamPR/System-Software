@@ -6,7 +6,7 @@ struct line{
     char label[10];
     char opcode[10];
     char operand[10];
-}lineBuffer;
+}inputLine;
 
 void readFrom(FILE *);
 void writeTo(int, FILE *);
@@ -28,42 +28,42 @@ void main(){
         exit(1);
     }
     readFrom(source);
-    if(strcmp(lineBuffer.opcode, "START")==0){
-        startingAddress = (int)strtol(lineBuffer.operand, NULL, 16);
+    if(strcmp(inputLine.opcode, "START")==0){
+        startingAddress = (int)strtol(inputLine.operand, NULL, 16);
         locCtr = startingAddress;
         writeTo(locCtr, intermediate);
         readFrom(source);
     }else{
         locCtr = 0;
     }
-    while(strcmp(lineBuffer.opcode, "END")!=0){
+    while(strcmp(inputLine.opcode, "END")!=0){
         writeTo(locCtr, intermediate);
-        if(strcmp(lineBuffer.label, "**")!=0){
-            if(search(lineBuffer.label, symTab)){
-                printf("\nLABEL ALREADY EXISTS: %s", lineBuffer.label);
+        if(strcmp(inputLine.label, "**")!=0){
+            if(search(inputLine.label, symTab)){
+                printf("\nLABEL ALREADY EXISTS: %s", inputLine.label);
             }else{
-                insertInto(symTab, lineBuffer.label, locCtr);
+                insertInto(symTab, inputLine.label, locCtr);
             }
         }
-        if(strcmp(lineBuffer.opcode, "WORD")==0){
+        if(strcmp(inputLine.opcode, "WORD")==0){
             locCtr += 3;
-        }else if(strcmp(lineBuffer.opcode, "RESW")==0){
-            locCtr += (3 * atoi(lineBuffer.operand));
-        }else if(strcmp(lineBuffer.opcode, "RESB")==0){
-            locCtr += atoi(lineBuffer.operand);
-        }else if(strcmp(lineBuffer.opcode, "BYTE")==0){
-            if(lineBuffer.operand[0]=='C'){
-                length = strlen(lineBuffer.operand) - 3;
-            }else if(lineBuffer.operand[0]=='X'){
-                length = strlen(lineBuffer.operand) - 3;
+        }else if(strcmp(inputLine.opcode, "RESW")==0){
+            locCtr += (3 * atoi(inputLine.operand));
+        }else if(strcmp(inputLine.opcode, "RESB")==0){
+            locCtr += atoi(inputLine.operand);
+        }else if(strcmp(inputLine.opcode, "BYTE")==0){
+            if(inputLine.operand[0]=='C'){
+                length = strlen(inputLine.operand) - 3;
+            }else if(inputLine.operand[0]=='X'){
+                length = strlen(inputLine.operand) - 3;
                 length = (length/2) + (length%2);
             }
             locCtr += length;
         }else{
-            if(search(lineBuffer.opcode, opTab)==1){
+            if(search(inputLine.opcode, opTab)==1){
                 locCtr += 3;
             }else{
-                printf("\nINVALID OPERATION CODE: %s", lineBuffer.opcode);
+                printf("\nINVALID OPERATION CODE: %s", inputLine.opcode);
             }
         }
         readFrom(source);
@@ -83,11 +83,11 @@ void main(){
 }
 
 void readFrom(FILE * fin){
-    fscanf(fin, "%s %s %s ", lineBuffer.label, lineBuffer.opcode, lineBuffer.operand);
+    fscanf(fin, "%s %s %s ", inputLine.label, inputLine.opcode, inputLine.operand);
 }
 
 void writeTo(int locCtr, FILE * fout){
-    fprintf(fout, "%4X %s %s %s\n", locCtr, lineBuffer.label, lineBuffer.opcode, lineBuffer.operand);
+    fprintf(fout, "%4X %s %s %s\n", locCtr, inputLine.label, inputLine.opcode, inputLine.operand);
 }
 void insertInto(FILE * file, char * label, int locCtr){
     fseek(file, 0, SEEK_END);

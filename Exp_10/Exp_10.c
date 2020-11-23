@@ -7,7 +7,7 @@ struct line{
     char label[10];
     char opcode[10];
     char operand[10];
-}lineBuffer;
+}inputLine;
 
 struct outLine{
     int startingAddress;
@@ -43,28 +43,28 @@ void main(){
     }
 
     readFrom(intermediate);
-    if(strcmp(lineBuffer.opcode, "START")==0){
-        strcpy(programName, lineBuffer.label);    
+    if(strcmp(inputLine.opcode, "START")==0){
+        strcpy(programName, inputLine.label);    
         textRecord.length = 0;
         fscanf(variables, "%s %d", temp, &pgmLength);
         initializeTextRecord();
-        pgmStartingAddress = (int)strtol(lineBuffer.operand, NULL, 16);
+        pgmStartingAddress = (int)strtol(inputLine.operand, NULL, 16);
         textRecord.startingAddress = pgmStartingAddress;
         readFrom(intermediate);
     }
     fprintf(output, "H%-6s%0000006X %0000006X\n", programName, pgmStartingAddress, pgmLength);
-    while(strcmp(lineBuffer.opcode, "END")!=0){
+    while(strcmp(inputLine.opcode, "END")!=0){
         if(textRecord.startingAddress == -1){
-            textRecord.startingAddress = lineBuffer.address;
+            textRecord.startingAddress = inputLine.address;
         }
-        found = search(lineBuffer.opcode, opTab);
+        found = search(inputLine.opcode, opTab);
         if(found!=-1){
             textRecord.length += 3;
             textRecord.opcode[outLineCounter] = found;
-            if(strcmp(lineBuffer.operand, "**")!=0){
-                found = search(lineBuffer.operand, symTab);
+            if(strcmp(inputLine.operand, "**")!=0){
+                found = search(inputLine.operand, symTab);
                 if(found==-1){
-                    printf("\n%s SYMBOL NOT FOUND", lineBuffer.operand);
+                    printf("\n%s SYMBOL NOT FOUND", inputLine.operand);
                     exit(1);
                 }
                 else{
@@ -73,24 +73,24 @@ void main(){
             }else{
                 textRecord.operandAdd[outLineCounter] = 0;
             }
-        }else if(strcmp(lineBuffer.opcode, "BYTE")==0){
-            if(lineBuffer.operand[0]=='C'){
+        }else if(strcmp(inputLine.opcode, "BYTE")==0){
+            if(inputLine.operand[0]=='C'){
                 textRecord.length += 3;
                 textRecord.opcode[outLineCounter] = -2;
                 textRecord.operandAdd[outLineCounter] = calculateHexValue();
-            }else if(lineBuffer.operand[0]=='X'){
+            }else if(inputLine.operand[0]=='X'){
                 textRecord.opcode[outLineCounter] = -3;
                 char tempStr[3];
-                for(int i=2;lineBuffer.operand[i]!='\'';i++){
-                    tempStr[i-2] = lineBuffer.operand[i];
+                for(int i=2;inputLine.operand[i]!='\'';i++){
+                    tempStr[i-2] = inputLine.operand[i];
                 }
                 textRecord.length += (strlen(tempStr)/2);
                 textRecord.operandAdd[outLineCounter] = calculateIntValue();
             }
-        }else if(strcmp(lineBuffer.opcode, "WORD")==0){
+        }else if(strcmp(inputLine.opcode, "WORD")==0){
             textRecord.length += 3;
             textRecord.opcode[outLineCounter] = -2;
-            textRecord.operandAdd[outLineCounter] = atoi(lineBuffer.operand);
+            textRecord.operandAdd[outLineCounter] = atoi(inputLine.operand);
         }
         outLineCounter++;
         if(outLineCounter>9){
@@ -122,7 +122,7 @@ void initializeTextRecord(){
     memset(textRecord.opcode, -1, 10*sizeof(int));
 }
 void readFrom(FILE * fin){
-    fscanf(fin, "%X %s %s %s", &lineBuffer.address ,lineBuffer.label, lineBuffer.opcode, lineBuffer.operand);
+    fscanf(fin, "%X %s %s %s", &inputLine.address ,inputLine.label, inputLine.opcode, inputLine.operand);
 }
 
 void writeTo(FILE * fout){
@@ -163,8 +163,8 @@ int search(char * key, FILE * file){
 int calculateHexValue(){
     FILE * fptr;
     fptr = fopen("text.txt", "w+");
-    for(int i=2; lineBuffer.operand[i]!='\'';i++){
-        fprintf(fptr,"%2X", lineBuffer.operand[i]);
+    for(int i=2; inputLine.operand[i]!='\'';i++){
+        fprintf(fptr,"%2X", inputLine.operand[i]);
     }
     fclose(fptr);
     fptr = fopen("text.txt", "r");
@@ -178,8 +178,8 @@ int calculateIntValue(){
     FILE * fptr;
     fptr = fopen("text.txt", "w+");
     char temp[10];
-    for(int i=2; lineBuffer.operand[i]!='\'';i++){
-        temp[i-2]=lineBuffer.operand[i];
+    for(int i=2; inputLine.operand[i]!='\'';i++){
+        temp[i-2]=inputLine.operand[i];
     }
     fprintf(fptr, "%s", temp);
     fclose(fptr);
