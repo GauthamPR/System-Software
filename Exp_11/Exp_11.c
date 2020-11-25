@@ -12,17 +12,16 @@ struct line{
     char operand[10];
 }inputLine;
 
-struct elem{
+struct symbol{
     char label[labelSize];
     int address;
-    struct elem* next;
+    struct symbol* next;
 }symTab[maxRows];
 
 struct outLine{
     int startingAddress;
     int operand[10];
     int opcode[10];
-    int objcode;
     int length;
 }outputLine;
 
@@ -63,6 +62,7 @@ void main(){
         locCtr = 0;
     }
     fprintf(output, "H%-6s%0000006X\n", pgmName, startingAddress);
+    outputLine.startingAddress = startingAddress;
     while(strcmp(inputLine.opcode, "END")!=0){
         if(strcmp(inputLine.label, "**")!=0){
             if(strcmp(inputLine.label, "FIRST")==0){
@@ -120,6 +120,7 @@ void main(){
         if(recCtr>9){
             outputLine.length = locCtr-outputLine.startingAddress;
             writeTo(output);
+            outputLine.startingAddress = locCtr;
             recCtr = 0;
         }
         readFrom(source);
@@ -145,7 +146,7 @@ void addToList(char * symbol, int addr){
             break;
         }
     }
-    struct elem * new = (struct elem *) malloc(sizeof(struct elem));
+    struct symbol * new = (struct symbol *) malloc(sizeof(struct symbol));
     new->address = addr;
     new->next = NULL;
     symTab[i].next = new;
@@ -198,7 +199,7 @@ void setSymbolValueAndReplaceOperand(char * label, int value){
             break;
         }
     }
-    struct elem * traverse = symTab[i].next;
+    struct symbol * traverse = symTab[i].next;
     while(traverse != NULL){
         outputLine.operand[traverse->address] = value;
         traverse = traverse->next;

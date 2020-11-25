@@ -6,10 +6,10 @@
 #define labelSize 10
 #define initialLabelValue "$EMPTY"
 
-struct elem{
+struct symbol{
     char label[labelSize];
     int address;
-    struct elem* next;
+    struct symbol* next;
 }table[maxRows];
 
 void enterValues();
@@ -66,7 +66,7 @@ void insertIntoTable(int key, char * label, int address){
         table[key].next = NULL;
         printf("\tVALUES INSERTED\n");
     }else{
-        struct elem* traverse = &table[key];
+        struct symbol* traverse = &table[key];
         while(traverse->next!=NULL){
             if(strcmp(label, table[key].label)==0){
                 printf("\tLABEL ALREADY EXISTS\n");
@@ -74,7 +74,7 @@ void insertIntoTable(int key, char * label, int address){
             }
             traverse = traverse->next;
         }
-        struct elem * newElem = (struct elem *)malloc(sizeof(struct elem));
+        struct symbol * newElem = (struct symbol *)malloc(sizeof(struct symbol));
         strcpy(newElem->label, label);
         newElem->address = address;
         newElem->next = NULL;
@@ -100,7 +100,7 @@ void display(){
         if(strcmp(table[i].label, initialLabelValue)==0){
             continue;
         }
-        struct elem *traverse = &table[i];
+        struct symbol *traverse = &table[i];
         while(traverse != NULL){
             printf("\t%s\t\t\t%d\n", traverse->label, traverse->address);
             traverse = traverse->next;
@@ -115,7 +115,7 @@ void searchValue(){
         if(strcmp(table[i].label, initialLabelValue)==0){
             continue;
         }
-        struct elem *traverse = &table[i];
+        struct symbol *traverse = &table[i];
         while(traverse != NULL){
             if(strcmp(traverse->label, searchKey)==0){
                 printf("\tAddress: %d\n", traverse->address);
