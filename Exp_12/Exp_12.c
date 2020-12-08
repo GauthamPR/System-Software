@@ -25,6 +25,8 @@ void main(){
     }
 
     fscanf(input, "%c %6s %6X %6X\n", &specifier, pgmName, &firstInstr, &pgmLength);
+    printf("\nProgram Name: %s", pgmName);
+    printf("\nAddress\t\tObject Code\n\n");
     while((*(*input)._ptr) != 'E'){
         readAndPrintFrom(input);
     }
