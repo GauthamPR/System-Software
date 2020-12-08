@@ -17,7 +17,7 @@ void main(){
     char specifier;
     FILE *input;
 
-    input = fopen("../bin/output.txt", "r");
+    input = fopen("../bin/inputFor12.txt", "r");
 
     if(input == NULL){
         printf("\nERROR OPENING FILE");
