@@ -61,7 +61,7 @@ void main(){
     }else{
         locCtr = 0;
     }
-    fprintf(output, "H%-6s%0000006X\n", pgmName, startingAddress);
+    fprintf(output, "H %-6s %0000006X ------\n", pgmName, startingAddress);
     outputLine.startingAddress = startingAddress;
     while(strcmp(inputLine.opcode, "END")!=0){
         if(strcmp(inputLine.label, "**")!=0){
@@ -128,12 +128,12 @@ void main(){
     outputLine.length = locCtr-outputLine.startingAddress;
     writeTo(output);
 
-    fprintf(output, "E%0000006X", first);
+    fprintf(output, "E %0000006X", first);
     fclose(opTab);
     fclose(source);
 
-    fseek(output, 13, SEEK_SET);
-    fprintf(output, " %000000X\n", locCtr - startingAddress);
+    fseek(output, 15, SEEK_SET);
+    fprintf(output, " %0000006X\n", locCtr - startingAddress);
     fclose(output);
     printf("\nASSEMBLE SUCCESSFUL");
     return ;
