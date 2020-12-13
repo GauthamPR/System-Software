@@ -6,10 +6,10 @@
 #define labelSize 10
 #define initialLabelValue "$EMPTY"
 
-struct elem{
+struct symbol{
     char label[labelSize];
     int address;
-    struct elem* next;
+    struct symbol* next;
 }table[maxRows];
 
 void enterValues();
@@ -19,15 +19,12 @@ void searchValue();
 void display();
 
 void initTables();
-void writeToFile();
-void readFromFile();
 
 void main(){
     int option;
     initTables();
-    readFromFile();
     while(1){
-        printf("\nEnter Option:\t1.Enter Values\t\t2.Write to file\t\t3.Search\t4.Display:\t5.Exit:\t");
+        printf("\nEnter Option:\t1.Enter Values\t\t2.Search\t3.Display:\t4.Exit:\t");
         scanf("%d", &option);
 
         switch (option)
@@ -36,15 +33,12 @@ void main(){
             enterValues();
             break;
         case 2:
-            writeToFile();
-            break;
-        case 3:
             searchValue();
             break;
-        case 4:
+        case 3:
             display();
             break;
-        case 5:
+        case 4:
             exit(1);
             break;
         default:
@@ -72,7 +66,7 @@ void insertIntoTable(int key, char * label, int address){
         table[key].next = NULL;
         printf("\tVALUES INSERTED\n");
     }else{
-        struct elem* traverse = &table[key];
+        struct symbol* traverse = &table[key];
         while(traverse->next!=NULL){
             if(strcmp(label, table[key].label)==0){
                 printf("\tLABEL ALREADY EXISTS\n");
@@ -80,7 +74,7 @@ void insertIntoTable(int key, char * label, int address){
             }
             traverse = traverse->next;
         }
-        struct elem * newElem = (struct elem *)malloc(sizeof(struct elem));
+        struct symbol * newElem = (struct symbol *)malloc(sizeof(struct symbol));
         strcpy(newElem->label, label);
         newElem->address = address;
         newElem->next = NULL;
@@ -96,7 +90,7 @@ int hash(char * label){
         sumOfChars += (traverse * i);
         traverse = label[++i];
     }
-    int key = (sumOfChars) % maxRows;
+    int key = sumOfChars % maxRows;
     return key;
 }
 void display(){
@@ -106,7 +100,7 @@ void display(){
         if(strcmp(table[i].label, initialLabelValue)==0){
             continue;
         }
-        struct elem *traverse = &table[i];
+        struct symbol *traverse = &table[i];
         while(traverse != NULL){
             printf("\t%s\t\t\t%d\n", traverse->label, traverse->address);
             traverse = traverse->next;
@@ -121,7 +115,7 @@ void searchValue(){
         if(strcmp(table[i].label, initialLabelValue)==0){
             continue;
         }
-        struct elem *traverse = &table[i];
+        struct symbol *traverse = &table[i];
         while(traverse != NULL){
             if(strcmp(traverse->label, searchKey)==0){
                 printf("\tAddress: %d\n", traverse->address);
@@ -139,53 +133,4 @@ void initTables(){
         strcpy(table[i].label, initialLabelValue);
         table[i].next = NULL;
     }
-}
-
-void readFromFile(){
-    FILE *fptr;
-    fptr = fopen("sym.txt", "r");
-    if(fptr == NULL){
-        printf("\nERROR OPENING FILE FOR READ");
-        return ;
-    }
-    for(int i=0; i<maxRows; i++){
-        fread(&table[i], sizeof(struct elem), 1, fptr);
-        struct elem * traverse = &table[i];
-        struct elem * prev = &table[i];
-        while(traverse->next != NULL){
-            traverse = (struct traverse *) malloc(sizeof(struct elem));
-            fread(traverse, sizeof(struct elem), 1, fptr);
-            prev->next = traverse;
-            prev = prev->next;
-        }
-    }
-    if(fread != 0){
-        printf("\nFILE READ SUCCESSFULLY");
-    }else{
-        printf("\nERROR READING FILE");
-    }
-    fclose(fptr);
-}
-
-void writeToFile(){
-    FILE *fptr;
-    fptr = fopen("sym.txt", "w");
-    if(fptr == NULL){
-        printf("\nERROR OPENING FILE FOR WRITE\n");
-        return ;
-    }
-    for(int i=0; i<maxRows; i++){
-        fwrite(&table[i], sizeof(struct elem), 1, fptr);
-        struct elem * traverse = table[i].next;
-        while(traverse != NULL){
-            fwrite(traverse, sizeof(struct elem), 1, fptr);
-            traverse = traverse->next;
-        }
-    }
-    if(fwrite != 0){
-        printf("\n\tWROTE TO FILE SUCCESSFULLY\n");
-    }else{
-        printf("\nERROR WRITIING FILE\n");
-    }
-    fclose(fptr);
 }
