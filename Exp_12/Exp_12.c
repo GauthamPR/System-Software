@@ -17,7 +17,7 @@ void main(){
     char specifier;
     FILE *input;
 
-    input = fopen("../bin/inputForLoaders.txt", "r");
+    input = fopen("../bin/src/inputFor12.txt", "r");
 
     if(input == NULL){
         printf("\nERROR OPENING FILE");
