@@ -9,6 +9,8 @@ struct inLine{
     int length;
 }inputLine;
 
+int startingAddress;
+
 void main(){
     char endLine;
     char pgmName[8];
@@ -23,7 +25,8 @@ void main(){
         printf("\nERROR OPENING FILE");
         exit(1);
     }
-
+    printf("\nEnter Starting Address: ");
+    scanf("%X", &startingAddress);
     fscanf(input, "%c %6s %6X %6X\n", &specifier, pgmName, &firstInstr, &pgmLength);
     printf("\nProgram Name: %s", pgmName);
     printf("\nAddress\t\tObject Code\n\n");
@@ -38,7 +41,7 @@ void readAndPrintFrom(FILE * fin){
     int byteCounter = 0;
     for(int i=0;byteCounter<inputLine.length ;i++){
             fscanf(fin, " %6X", &inputLine.objectCode[i]);
-            printf("%X\t\t%X\n", inputLine.startingAddress + byteCounter, inputLine.objectCode[i]);
+            printf("%X\t\t%X\n", inputLine.startingAddress + byteCounter + startingAddress, inputLine.objectCode[i]);
             byteCounter += 3;
     }
     fscanf(fin, "\n");
