@@ -2,8 +2,11 @@
 #include <stdlib.h>
 
 void readAndPrintFrom(FILE *);
+void convertToBit(int, int *);
+
 struct inLine{
     char specifier;
+    int bitMask;
     int startingAddress;
     int objectCode[10];
     int length;
@@ -19,7 +22,7 @@ void main(){
     char specifier;
     FILE *input;
 
-    input = fopen("../bin/inputForLoaders.txt", "r");
+    input = fopen("../bin/src/inputFor13.txt", "r");
 
     if(input == NULL){
         printf("\nERROR OPENING FILE");
@@ -37,12 +40,27 @@ void main(){
 }
 
 void readAndPrintFrom(FILE * fin){
-    fscanf(fin, "%c %6X %2X", &inputLine.specifier, &inputLine.startingAddress, &inputLine.length);
+    fscanf(fin, "%c %6X %2X %3X", &inputLine.specifier, &inputLine.startingAddress, &inputLine.length, &inputLine.bitMask);
+    int bits[12];
+    convertToBit(inputLine.bitMask, bits);
     int byteCounter = 0;
+    int i=0;
     for(int i=0;byteCounter<inputLine.length ;i++){
             fscanf(fin, " %6X", &inputLine.objectCode[i]);
-            printf("%X\t\t%X\n", inputLine.startingAddress + byteCounter + startingAddress, inputLine.objectCode[i]);
+            if(bits[byteCounter%3]==1){
+                inputLine.objectCode[i] += startingAddress;    
+            }
+            printf("%X\t\t%0000006X\n", inputLine.startingAddress + byteCounter + startingAddress, inputLine.objectCode[i]);
             byteCounter += 3;
     }
     fscanf(fin, "\n");
+}
+
+void convertToBit(int decimal, int * bits){
+    int remainder;
+    int i;
+    for(i=11; i>=0; i--){
+        bits[i] = decimal%2;
+        decimal = decimal/2;
+    }
 }
