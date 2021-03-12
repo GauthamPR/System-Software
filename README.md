@@ -1,20 +1,20 @@
 # System Software Lab
 
 1. [CPU Scheduling Algorithms](/Exp_1)
-  - FCFS
-  - SJFS
-  - Round Robin (*pre-emptive*)
-  - Priority
+    - FCFS
+    - SJFS
+    - Round Robin (*pre-emptive*)
+    - Priority
 2. [Paging Techniques](/Exp_2)
 3. [File Organisation Techniques](/Exp_3)
-  - Single-level directory
-  - Two-level directory
-  - Hierarchical
+    - Single-level directory
+    - Two-level directory
+    - Hierarchical
 4. [Banker's Algorithm Implementation](/Exp_4)
 5. [Disk Scheduling Algorithm Simulation](/Exp_5)
-  - FCFS
-  - SCAN
-  - FSCAN
+    - FCFS
+    - SCAN
+    - FSCAN
 6. [Producer-Consumer Problem Implementation](/Exp_6)
 7. [Dining Philosopher's Problem Simulation](/Exp_7) (*Single Threaded*)
 8. [Symbol Table of Two-pass Assembler](/Exp_8) (Hashing Method: *Division*)
